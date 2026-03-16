@@ -122,6 +122,7 @@ export async function GET(req: Request) {
 
     const db = getAdminDb();
     const ref = db.doc(`privateIntegrations/${uid}`);
+    const publicRef = db.doc(`users/${uid}/integrations/meta`);
     const now = Date.now();
     const connection: MetaConnection = {
       connectedAt: now,
@@ -139,6 +140,20 @@ export async function GET(req: Request) {
     };
 
     await ref.set({ meta: connection }, { merge: true });
+    // Store non-sensitive integration status under the user's profile (no tokens).
+    await publicRef.set(
+      {
+        connected: true,
+        updatedAt: now,
+        connectedAt: now,
+        graphApiVersion: env.graphApiVersion,
+        pageId,
+        pageName,
+        igUserId,
+        igUsername,
+      },
+      { merge: true },
+    );
 
     return NextResponse.redirect(
       new URL(`/settings?meta=connected`, process.env.APP_URL || url.origin).toString(),

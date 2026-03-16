@@ -24,6 +24,7 @@ export async function POST(req: Request) {
     const env = getMetaEnv();
     const db = getAdminDb();
     const ref = db.doc(`privateIntegrations/${uid}`);
+    const publicRef = db.doc(`users/${uid}/integrations/meta`);
     const snap = await ref.get();
     const meta = snap.exists ? (snap.get("meta") as MetaConnection | null) : null;
     if (!meta?.userAccessTokenLongLived) {
@@ -86,6 +87,19 @@ export async function POST(req: Request) {
           igUserId,
           igUsername,
         },
+      },
+      { merge: true },
+    );
+
+    await publicRef.set(
+      {
+        connected: true,
+        updatedAt: Date.now(),
+        graphApiVersion: env.graphApiVersion,
+        pageId,
+        pageName,
+        igUserId,
+        igUsername,
       },
       { merge: true },
     );

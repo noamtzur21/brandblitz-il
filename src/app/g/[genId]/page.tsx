@@ -260,6 +260,61 @@ export default function GenDetailsPage() {
               </div>
 
               <div className="mt-4 flex flex-col gap-2">
+                {gen.autoUpload?.status === "pending_approval" || gen.autoUpload?.status === ("awaiting_approval" as any) ? (
+                  <div className="bb-card p-3 bg-amber-400/10 border border-amber-400/20">
+                    <div className="text-xs text-amber-200/90">ממתין לאישור לפני העלאה</div>
+                    <div className="mt-2 grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        className="bb-btn bb-btn-primary text-sm"
+                        onClick={async () => {
+                          if (!user) return;
+                          const token = await user.getIdToken();
+                          const res = await fetch("/api/auto-upload/decision", {
+                            method: "POST",
+                            headers: {
+                              "content-type": "application/json",
+                              ...(token ? { authorization: `Bearer ${token}` } : {}),
+                            },
+                            body: JSON.stringify({ genId: gen.id, decision: "approve" }),
+                          });
+                          const data = (await res.json().catch(() => null)) as any;
+                          if (!res.ok) {
+                            push({ type: "error", title: "שגיאה", description: data?.error ?? "אישור נכשל" });
+                            return;
+                          }
+                          push({ type: "success", title: "אושר", description: "העלאה התחילה" });
+                        }}
+                      >
+                        אשר העלאה
+                      </button>
+                      <button
+                        type="button"
+                        className="bb-btn bb-btn-secondary text-sm"
+                        onClick={async () => {
+                          if (!user) return;
+                          const token = await user.getIdToken();
+                          const res = await fetch("/api/auto-upload/decision", {
+                            method: "POST",
+                            headers: {
+                              "content-type": "application/json",
+                              ...(token ? { authorization: `Bearer ${token}` } : {}),
+                            },
+                            body: JSON.stringify({ genId: gen.id, decision: "reject" }),
+                          });
+                          const data = (await res.json().catch(() => null)) as any;
+                          if (!res.ok) {
+                            push({ type: "error", title: "שגיאה", description: data?.error ?? "דחייה נכשלה" });
+                            return;
+                          }
+                          push({ type: "success", title: "נדחה", description: "לא יעלה לרשתות" });
+                        }}
+                      >
+                        דחה
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
                 {gen.resultUrl ? (
                   <button
                     type="button"

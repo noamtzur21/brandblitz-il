@@ -36,6 +36,16 @@ export type GenerationDoc = {
   /** Premium (Veo): internal progress stage + heartbeat for UI. */
   premiumStage?: "submitted" | "generating" | "finalizing" | "done" | string | null;
   premiumUpdatedAt?: number | null;
+
+  /** Auto Upload: when set, this generation is linked to a scheduled post. */
+  autoUpload?: {
+    enabled?: boolean;
+    requireApproval?: boolean;
+    status?: "waiting_asset" | "pending_approval" | "approved" | "cancelled" | "publishing" | "done" | "rejected" | "error" | string;
+    platform?: "instagram" | "facebook" | string;
+    placement?: "post" | "reels" | "story" | string;
+    scheduledPostId?: string | null;
+  } | null;
 };
 
 /** Brand Kit – ערכת מותג (לוגו, צבע, טלפון, אתר). נשמר ב־users/{uid}/brandKit/settings. */
@@ -44,6 +54,28 @@ export type BrandKitDoc = {
   primaryColor?: string | null; // hex, e.g. "#00f5ff"
   phone?: string | null;
   website?: string | null;
+  updatedAt: number;
+};
+
+export type AutoUploadSettingsDoc = {
+  enabled: boolean;
+  requireApproval: boolean;
+  niche: string;
+  userRequestTemplate: string;
+  postsPerDay: number;
+  timeSlots: string[]; // ["09:00","13:00"]
+  /** Optional per-slot override: { "09:00": "premium" } */
+  slotTypes?: Partial<Record<string, GenerationType>>;
+  timeZone: "Asia/Jerusalem";
+  destinations: Array<{
+    platform: "instagram" | "facebook";
+    placement: "post" | "reels" | "story";
+  }>;
+  mix: {
+    image: number;
+    remotion: number;
+    premium: number;
+  };
   updatedAt: number;
 };
 

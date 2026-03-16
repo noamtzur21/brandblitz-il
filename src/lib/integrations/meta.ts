@@ -5,6 +5,7 @@ import crypto from "node:crypto";
 export type MetaEnv = {
   appId: string;
   appSecret: string;
+  clientToken: string;
   redirectUrl: string;
   graphApiVersion: string;
   stateSecret: string;
@@ -13,6 +14,7 @@ export type MetaEnv = {
 export function getMetaEnv(): MetaEnv {
   const appId = process.env.META_APP_ID || "";
   const appSecret = process.env.META_APP_SECRET || "";
+  const clientToken = process.env.META_CLIENT_TOKEN || "";
   const stateSecret = process.env.META_STATE_SECRET || "";
   const graphApiVersion = process.env.META_GRAPH_API_VERSION || "v25.0";
   const redirectUrl =
@@ -21,10 +23,11 @@ export function getMetaEnv(): MetaEnv {
 
   if (!appId) throw new Error("Missing META_APP_ID");
   if (!appSecret) throw new Error("Missing META_APP_SECRET");
+  if (!clientToken) throw new Error("Missing META_CLIENT_TOKEN");
   if (!stateSecret) throw new Error("Missing META_STATE_SECRET");
   if (!redirectUrl) throw new Error("Missing META_REDIRECT_URL (or APP_URL)");
 
-  return { appId, appSecret, redirectUrl, graphApiVersion, stateSecret };
+  return { appId, appSecret, clientToken, redirectUrl, graphApiVersion, stateSecret };
 }
 
 function base64UrlEncode(buf: Buffer): string {

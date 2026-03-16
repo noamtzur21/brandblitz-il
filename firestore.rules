@@ -32,5 +32,12 @@ service cloud.firestore {
       allow read: if request.auth != null && resource.data.userId == request.auth.uid;
       allow create, update, delete: if false;
     }
+
+    // scheduledPosts: allow users to READ only their own docs (real-time UI).
+    // Writes remain server-only (cancel via API route).
+    match /scheduledPosts/{docId} {
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create, update, delete: if false;
+    }
   }
 }
