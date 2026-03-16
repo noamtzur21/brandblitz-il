@@ -3,24 +3,43 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "remotion:preview": "remotion preview remotion/index.ts",
+    "worker:remotion": "tsx scripts/remotion-worker.ts",
+    "worker:veo": "tsx scripts/veo-worker.ts",
+    "fetch-music": "tsx scripts/fetch-music.ts",
+    "music:refresh": "tsx scripts/fetch-music.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.983.0",
+    "firebase": "^12.8.0",
+    "firebase-admin": "^12.7.0",
+    "google-auth-library": "^10.6.1",
     "next": "16.1.6",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "sharp": "^0.34.5",
+    "zod": "^3.22.3"
   },
   "devDependencies": {
+    "@remotion/cli": "^4.0.417",
+    "@remotion/media-utils": "^4.0.417",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.2.3",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "remotion": "^4.0.417",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
+  },
+  "overrides": {
+    "fast-xml-parser": "^5.3.4"
   }
 }

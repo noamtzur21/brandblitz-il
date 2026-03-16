@@ -1,4 +1,17 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BrandBlitz IL
+
+אוטומציית תוכן בהיקף גבוה לעסקים בישראל (TikTok/Instagram, עברית, Remotion, Vertex AI).
+
+- **הגדרת Firebase (חובה):** [FIREBASE-SETUP.md](./FIREBASE-SETUP.md)
+- **R2 (תמונות+וידאו):** [R2-SETUP.md](./R2-SETUP.md)
+- **Remotion:** [REMOTION-QUICKSTART.md](./REMOTION-QUICKSTART.md)
+- **Vertex AI (Imagen/Veo):** ודא Billing + Vertex AI API + הרשאות ל-Service Account (ראו `DEPLOY.md` משתני סביבה).
+- **פריסה (production):** [DEPLOY.md](./DEPLOY.md)
+- **מפרט:** [SPEC.md](./SPEC.md)
+
+---
+
+This is a [Next.js](https://nextjs.org) project (App Router, Tailwind, Firebase, Remotion).
 
 ## Getting Started
 

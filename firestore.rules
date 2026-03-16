@@ -1,0 +1,36 @@
+rules_version = '2';
+
+// BrandBlitz IL – Firestore Security Rules
+// האפליקציה: Auth אנונימי, קרדיטים ב-users/{uid}/credits/summary, נכסים ב-generations.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Private integrations (Meta tokens etc.) – server-only
+    match /privateIntegrations/{docId} {
+      allow read, write: if false;
+    }
+
+    // Admin identities – server-only
+    match /admins/{uid} {
+      allow read, write: if false;
+    }
+
+    // קרדיטים: רק המשתמש המחובר יכול לקרוא/לכתוב למסמך שלו
+    match /users/{userId}/credits/summary {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // שאר המסמכים תחת users (אם יהיו בעתיד) – רק הקריאה לעצמי
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // generations: רק קריאה למסמכים שבהם userId שווה למשתמש המחובר. יצירה/עדכון/מחיקה רק מהשרת (Admin SDK).
+    // הערה: ב-Firebase Console request.auth הוא null, לכן "Error loading documents" שם – צפוי. האפליקציה עובדת כי המשתמש מחובר.
+    match /generations/{genId} {
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create, update, delete: if false;
+    }
+  }
+}
