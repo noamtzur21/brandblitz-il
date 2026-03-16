@@ -137,6 +137,9 @@ export function AppShell({
         <Link className="underline underline-offset-4 hover:text-white/80" href="/privacy">
           מדיניות פרטיות
         </Link>
+        <Link className="underline underline-offset-4 hover:text-white/80" href="/terms">
+          תנאים
+        </Link>
         <Link className="underline underline-offset-4 hover:text-white/80" href="/data-deletion">
           מחיקת מידע
         </Link>
