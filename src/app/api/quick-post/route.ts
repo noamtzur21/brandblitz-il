@@ -23,6 +23,11 @@ type RateLimitResult =
   | { ok: true }
   | { ok: false; retryAfterSec: number; message: string };
 
+function graphApiVersion() {
+  // Keep in sync with Meta dashboard; configurable via env for future bumps.
+  return process.env.META_GRAPH_API_VERSION || "v25.0";
+}
+
 function isVideoUrl(url: string) {
   const u = url.toLowerCase();
   return u.endsWith(".mp4") || u.includes("video") || u.includes(".webm");
@@ -121,7 +126,7 @@ async function enforceQuickPostRateLimit(opts: {
 }
 
 async function getInstagramContainerStatus(opts: { creationId: string; accessToken: string }) {
-  const api = "v25.0";
+  const api = graphApiVersion();
   return await fetchJson<{ status_code?: string }>(
     `https://graph.facebook.com/${api}/${encodeURIComponent(opts.creationId)}?fields=status_code&access_token=${encodeURIComponent(
       opts.accessToken,
@@ -130,7 +135,7 @@ async function getInstagramContainerStatus(opts: { creationId: string; accessTok
 }
 
 async function publishInstagramContainer(opts: { igUserId: string; accessToken: string; creationId: string }) {
-  const api = "v25.0";
+  const api = graphApiVersion();
   const base = `https://graph.facebook.com/${api}/${encodeURIComponent(opts.igUserId)}`;
   const publishUrl = new URL(`${base}/media_publish`);
   publishUrl.searchParams.set("access_token", opts.accessToken);
@@ -159,7 +164,7 @@ async function publishInstagram({
   caption: string;
   resumeCreationId?: string | null;
 }) {
-  const api = "v25.0";
+  const api = graphApiVersion();
   const base = `https://graph.facebook.com/${api}/${encodeURIComponent(igUserId)}`;
 
   // Resume flow: check status and publish if ready.
@@ -233,7 +238,7 @@ async function publishFacebookPage({
   isVideo: boolean;
   caption: string;
 }) {
-  const api = "v25.0";
+  const api = graphApiVersion();
   if (placement === "story") {
     if (isVideo) {
       // Video story upload: start -> upload_url -> finish
