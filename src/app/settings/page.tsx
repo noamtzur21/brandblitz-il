@@ -611,30 +611,63 @@ export default function SettingsPage() {
             </div>
             <button
               type="button"
-              className={["bb-btn text-sm", autoEnabled ? "bb-btn-primary" : "bb-btn-secondary"].join(" ")}
               onClick={() => setAutoEnabled((v) => !v)}
               aria-pressed={autoEnabled}
+              className={[
+                "group inline-flex items-center gap-3 select-none rounded-full border px-3 py-2 transition",
+                autoEnabled ? "border-emerald-400/25 bg-emerald-500/10" : "border-white/15 bg-white/5 hover:bg-white/7",
+              ].join(" ")}
             >
-              {autoEnabled ? "ON" : "OFF"}
+              <span className={["text-xs font-semibold", autoEnabled ? "text-emerald-200" : "text-white/70"].join(" ")}>
+                {autoEnabled ? "מופעל" : "כבוי"}
+              </span>
+              <span
+                className={[
+                  "relative inline-flex h-6 w-11 items-center rounded-full border transition",
+                  autoEnabled ? "border-emerald-400/25 bg-emerald-500/20" : "border-white/15 bg-white/10",
+                ].join(" ")}
+              >
+                <span
+                  className={[
+                    "inline-block h-5 w-5 rounded-full bg-white shadow transition-transform",
+                    autoEnabled ? "translate-x-5" : "translate-x-0.5",
+                  ].join(" ")}
+                />
+              </span>
             </button>
           </div>
 
-          <div className="mt-4 grid gap-3">
-            <div className="grid gap-1">
-              <div className="text-xs text-white/60">תחום העסק</div>
-              <input
-                className="bb-card bb-input w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
-                value={autoNiche}
-                onChange={(e) => setAutoNiche(e.target.value)}
-                placeholder="לדוגמה: מסעדה / עורך דין / קוסמטיקה"
-                dir="rtl"
-              />
+          <div className="mt-4 grid gap-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="bb-card bg-white/5 border border-white/10 rounded-2xl p-4">
+                <div className="text-[11px] text-white/60">תחום העסק</div>
+                <input
+                  className="mt-2 bb-card bb-input w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
+                  value={autoNiche}
+                  onChange={(e) => setAutoNiche(e.target.value)}
+                  placeholder="לדוגמה: מסעדה / עורך דין / קוסמטיקה"
+                  dir="rtl"
+                />
+              </div>
+
+              <div className="bb-card bg-white/5 border border-white/10 rounded-2xl p-4">
+                <div className="text-[11px] text-white/60">כמה פוסטים ביום</div>
+                <input
+                  type="number"
+                  min={1}
+                  max={12}
+                  className="mt-2 bb-card bb-input w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
+                  value={autoPostsPerDay}
+                  onChange={(e) => setAutoPostsPerDay(clampInt(Number(e.target.value), 1, 12))}
+                />
+                <div className="mt-2 text-[11px] text-white/50">טיפ: התאימו את “חלוקת סוג תוכן” לסכום הזה.</div>
+              </div>
             </div>
 
-            <div className="grid gap-1">
-              <div className="text-xs text-white/60">מה לייצר (תבנית בקשה)</div>
+            <div className="bb-card bg-white/5 border border-white/10 rounded-2xl p-4">
+              <div className="text-[11px] text-white/60">מה לייצר (תבנית בקשה)</div>
               <textarea
-                className="bb-card bb-input w-full min-h-[90px] rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none resize-y"
+                className="mt-2 bb-card bb-input w-full min-h-[110px] rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none resize-y"
                 value={autoTemplate}
                 onChange={(e) => setAutoTemplate(e.target.value)}
                 placeholder="לדוגמה: פוסטים שמדגישים מבצע השבוע + קריאה לפעולה. לשמור על טון מקצועי וקצר."
@@ -642,70 +675,80 @@ export default function SettingsPage() {
               />
             </div>
 
-            <div className="grid gap-1">
-              <div className="text-xs text-white/60">כמה פוסטים ביום</div>
+            <div className="bb-card bg-white/5 border border-white/10 rounded-2xl p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-[11px] text-white/60">שעות פרסום (שעון ישראל)</div>
+                <div className="text-[11px] text-white/45 font-mono">{DEFAULT_TZ}</div>
+              </div>
               <input
-                type="number"
-                min={1}
-                max={12}
-                className="bb-card bb-input w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
-                value={autoPostsPerDay}
-                onChange={(e) => setAutoPostsPerDay(clampInt(Number(e.target.value), 1, 12))}
-              />
-            </div>
-
-            <div className="grid gap-1">
-              <div className="text-xs text-white/60">שעות להעלאה (שעון ישראל)</div>
-              <input
-                className="bb-card bb-input w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
+                className="mt-2 bb-card bb-input w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
                 value={autoTimeSlotsText}
                 onChange={(e) => setAutoTimeSlotsText(e.target.value)}
                 placeholder="09:00, 13:00, 19:00"
                 dir="ltr"
               />
-              <div className="text-[11px] text-white/55 leading-5">
-                פורמט: <span className="font-mono">HH:MM</span> או <span className="font-mono">HH:MM premium</span> /{" "}
-                <span className="font-mono">remotion</span> / <span className="font-mono">image</span>. מפרידים בפסיק או שורה חדשה.
-                Timezone: {DEFAULT_TZ}
+              <div className="mt-2 text-[11px] text-white/55 leading-5">
+                פורמט: <span className="font-mono">HH:MM</span> או{" "}
+                <span className="font-mono">HH:MM premium</span>/<span className="font-mono">remotion</span>/
+                <span className="font-mono">image</span>.
               </div>
             </div>
 
-            <div className="grid gap-2">
-              <div className="text-xs text-white/60">לאיזה פלטפורמות</div>
-              <div className="grid gap-2 sm:grid-cols-2">
+            <div className="bb-card bg-white/5 border border-white/10 rounded-2xl p-4">
+              <div className="text-[11px] text-white/60">לאיזה פלטפורמות</div>
+              <div className="mt-3 flex flex-wrap gap-2">
                 {DEST_OPTIONS.map((opt) => {
                   const checked = autoDestIds.includes(opt.id);
                   return (
-                    <label key={opt.id} className="bb-card bg-white/5 border border-white/10 rounded-xl px-3 py-2 flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={(e) => {
-                          setAutoDestIds((prev) => {
-                            const set = new Set(prev);
-                            if (e.target.checked) set.add(opt.id);
-                            else set.delete(opt.id);
-                            return Array.from(set);
-                          });
-                        }}
-                      />
-                      <span className="text-sm text-white/80">{opt.label}</span>
-                    </label>
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => {
+                        setAutoDestIds((prev) => {
+                          const set = new Set(prev);
+                          if (set.has(opt.id)) set.delete(opt.id);
+                          else set.add(opt.id);
+                          return Array.from(set);
+                        });
+                      }}
+                      className={[
+                        "inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm transition",
+                        checked
+                          ? "border-cyan-400/30 bg-cyan-500/15 text-white"
+                          : "border-white/10 bg-white/5 text-white/75 hover:bg-white/8",
+                      ].join(" ")}
+                      aria-pressed={checked}
+                    >
+                      <span
+                        className={[
+                          "inline-flex h-5 w-5 items-center justify-center rounded-full border text-[11px] font-semibold",
+                          checked ? "border-cyan-400/30 bg-cyan-500/20 text-cyan-100" : "border-white/10 bg-white/5 text-white/60",
+                        ].join(" ")}
+                      >
+                        {checked ? "✓" : "+"}
+                      </span>
+                      <span>{opt.label}</span>
+                    </button>
                   );
                 })}
               </div>
             </div>
 
-            <div className="grid gap-2">
-              <div className="text-xs text-white/60">חלוקת סוג תוכן ביום (תמונה / Remotion / פרימיום)</div>
-              <div className="grid gap-2 sm:grid-cols-3">
+            <div className="bb-card bg-white/5 border border-white/10 rounded-2xl p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-[11px] text-white/60">חלוקת סוג תוכן ביום</div>
+                <div className="text-[11px] text-white/45">
+                  יעד: {autoPostsPerDay} · כרגע: {autoMixImage + autoMixRemotion + autoMixPremium}
+                </div>
+              </div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-3">
                 <div className="bb-card bg-white/5 border border-white/10 rounded-xl p-3">
                   <div className="text-xs text-white/60">תמונות</div>
                   <input
                     type="number"
                     min={0}
                     max={12}
-                    className="mt-1 bb-card bb-input w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
+                    className="mt-2 bb-card bb-input w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
                     value={autoMixImage}
                     onChange={(e) => setAutoMixImage(clampInt(Number(e.target.value), 0, 12))}
                   />
@@ -716,7 +759,7 @@ export default function SettingsPage() {
                     type="number"
                     min={0}
                     max={12}
-                    className="mt-1 bb-card bb-input w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
+                    className="mt-2 bb-card bb-input w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
                     value={autoMixRemotion}
                     onChange={(e) => setAutoMixRemotion(clampInt(Number(e.target.value), 0, 12))}
                   />
@@ -727,13 +770,13 @@ export default function SettingsPage() {
                     type="number"
                     min={0}
                     max={12}
-                    className="mt-1 bb-card bb-input w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
+                    className="mt-2 bb-card bb-input w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
                     value={autoMixPremium}
                     onChange={(e) => setAutoMixPremium(clampInt(Number(e.target.value), 0, 12))}
                   />
                 </div>
               </div>
-              <div className="text-[11px] text-white/55">
+              <div className="mt-2 text-[11px] text-white/55">
                 מומלץ שהסכום יהיה שווה ל‑{autoPostsPerDay}. כרגע: {autoMixImage + autoMixRemotion + autoMixPremium}
               </div>
             </div>
@@ -753,10 +796,13 @@ export default function SettingsPage() {
               </div>
             </label>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
               <button
                 type="button"
-                className="bb-btn bb-btn-primary"
+                className={[
+                  "bb-btn bb-btn-primary w-full sm:w-auto",
+                  "shadow-[0_0_0_1px_rgba(56,189,248,0.18),0_12px_30px_rgba(56,189,248,0.10)]",
+                ].join(" ")}
                 disabled={autoSaving || !user || isDemo || !isFirebaseClientConfigured()}
                 onClick={async () => {
                   if (!user || isDemo || !isFirebaseClientConfigured()) return;
@@ -802,10 +848,20 @@ export default function SettingsPage() {
                   }
                 }}
               >
-                {autoSaving ? "שומר..." : "שמור"}
+                {autoSaving ? "שומר..." : "שמור הגדרות העלאה"}
               </button>
-              {autoSaved ? <span className="text-sm text-emerald-400">נשמר ✓</span> : null}
-              {autoError ? <span className="text-sm text-red-300">{autoError}</span> : null}
+              <div className="flex items-center gap-3">
+                {autoSaved ? (
+                  <span className="inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-200">
+                    נשמר ✓
+                  </span>
+                ) : null}
+                {autoError ? (
+                  <span className="inline-flex items-center rounded-full border border-red-400/20 bg-red-500/10 px-3 py-1 text-xs text-red-200">
+                    {autoError}
+                  </span>
+                ) : null}
+              </div>
             </div>
           </div>
         </section>
